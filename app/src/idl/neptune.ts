@@ -14,16 +14,16 @@ export type Neptune = {
   },
   "instructions": [
     {
-      "name": "initialize",
+      "name": "createVault",
       "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
+        29,
+        237,
+        247,
+        208,
+        193,
+        82,
+        54,
+        135
       ],
       "accounts": [
         {
@@ -51,6 +51,26 @@ export type Neptune = {
         }
       ],
       "args": []
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "unauthorized",
+      "msg": "You do not have sufficient permissions to perform this action."
+    },
+    {
+      "code": 6001,
+      "name": "cannotGetBump",
+      "msg": "Cannot get the bump."
+    },
+    {
+      "code": 6002,
+      "name": "arithmeticOverflow"
+    },
+    {
+      "code": 6003,
+      "name": "invalidRedeemAmt"
     }
   ]
 };
