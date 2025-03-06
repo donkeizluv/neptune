@@ -23,5 +23,5 @@ pub enum NeptuneError {
     #[msg("Cannot get the bump.")]
     CannotGetBump,
     ArithmeticOverflow,
-    InvalidRedeemAmt,
+    InvalidUnstakeAmt,
 }

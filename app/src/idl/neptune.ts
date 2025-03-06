@@ -70,7 +70,7 @@ export type Neptune = {
     },
     {
       "code": 6003,
-      "name": "invalidRedeemAmt"
+      "name": "invalidUnstakeAmt"
     }
   ]
 };
