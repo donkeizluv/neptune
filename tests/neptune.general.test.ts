@@ -33,7 +33,7 @@ describe("neptune", () => {
       // systemProgram: SystemProgram.programId,
     };
     const tx = await program.methods
-      .createVault()
+      .createVault(100)
       .accounts(accounts)
       .signers([player])
       .rpc({ skipPreflight: true });

@@ -2,7 +2,9 @@ use anchor_lang::prelude::*;
 use instuctions::*;
 
 pub mod instuctions;
+pub mod macros;
 pub mod state;
+pub mod utils;
 declare_id!("DxQiCxj7hPw5oCXt4uMxXrsp1CLBmRUXzZczUwH9C5VU");
 
 declare_program!(lock_voter);
@@ -11,8 +13,8 @@ declare_program!(lock_voter);
 pub mod neptune {
     use super::*;
 
-    pub fn create_vault(ctx: Context<CreateVault>) -> Result<()> {
-        ctx.accounts.create_vault()
+    pub fn create_vault(ctx: Context<CreateVault>, fees_bps: u16) -> Result<()> {
+        ctx.accounts.create_vault(ctx.bumps.vault, fees_bps)
     }
 }
 
@@ -24,4 +26,6 @@ pub enum NeptuneError {
     CannotGetBump,
     ArithmeticOverflow,
     InvalidUnstakeAmt,
+    AmtMustGreaterThanZero,
+    InvalidBPS,
 }
