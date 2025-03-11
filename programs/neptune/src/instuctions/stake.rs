@@ -33,7 +33,7 @@ impl<'info> Stake<'info> {
         increase_locked_amount(incease_lock_amt_cpi, utoken_amt)?;
 
         // mint lst to user
-        let lst_amt_to_mint = self.vault.get_lst_amt(utoken_amt)?;
+        let lst_amt = self.vault.get_lst_amt(utoken_amt)?;
         let wagmi_escrow_key = self.escrow.key();
         let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, wagmi_escrow_key);
         let mint_lst_to_user_cpi = CpiContext::new_with_signer(
@@ -45,10 +45,10 @@ impl<'info> Stake<'info> {
             },
             vault_seeds,
         );
-        mint_to(mint_lst_to_user_cpi, lst_amt_to_mint)?;
+        mint_to(mint_lst_to_user_cpi, lst_amt)?;
 
         // update vault state
-        self.vault.stake(utoken_amt, lst_amt_to_mint)?;
+        self.vault.stake(utoken_amt, lst_amt)?;
 
         Ok(())
     }

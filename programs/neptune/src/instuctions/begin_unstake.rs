@@ -19,20 +19,22 @@ impl<'info> BeginUnstaking<'info> {
     pub fn begin_unstaking(&mut self, lst_amt: u64, unstaking_bump: u8) -> Result<()> {
         require!(lst_amt > 0, NeptuneError::AmtMustGreaterThanZero);
 
-        let utoken_amt_to_be_released = self.vault.get_utoken_amt(lst_amt)?;
-        self.unstaking.utoken_amt = utoken_amt_to_be_released;
+        let utoken_amt = self.vault.get_utoken_amt(lst_amt)?;
+        // update unstaking state
+        self.unstaking.utoken_amt = utoken_amt;
         self.unstaking.lst_amt = lst_amt;
         self.unstaking.owner = self.signer.key();
         self.unstaking.partial_unstaking = self.partial_unstaking.key();
         self.unstaking.vault = self.vault.key();
         self.unstaking.bump = unstaking_bump;
+
         // xfer lst to our escrow
         let xfer_lst_to_escrow_cpi = CpiContext::new(
             self.token_program.to_account_info(),
             TransferChecked {
                 from: self.unstake_ata.to_account_info(),
                 mint: self.lst_mint.to_account_info(),
-                to: self.unstake_escrow_ata.to_account_info(),
+                to: self.unstaking_escrow_ata.to_account_info(),
                 authority: self.signer.to_account_info(),
             },
         );
@@ -40,7 +42,6 @@ impl<'info> BeginUnstaking<'info> {
 
         // partial_unstake cpi
         let unstaking_key = self.unstaking.key();
-
         // MAGIC: does this work tho? since unstaking is initally a rnd kp
         let partial_unstaking_seeds: &[&[&[u8]]] =
             partial_unstaking_seeds!(self.unstaking, unstaking_key);
@@ -58,7 +59,7 @@ impl<'info> BeginUnstaking<'info> {
         );
         cpi::open_partial_unstaking(
             open_partial_unstaking_cpi,
-            lst_amt,
+            utoken_amt,
             Unstaking::PARTIAL_UNSTAKING_MEMO.to_string(),
         )?;
 
@@ -120,7 +121,7 @@ pub struct BeginUnstaking<'info>{
         associated_token::mint = lst_mint,
         associated_token::authority = unstaking
     )]
-    pub unstake_escrow_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub unstaking_escrow_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
 
 
