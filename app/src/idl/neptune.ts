@@ -188,6 +188,10 @@ export type Neptune = {
     {
       "code": 6005,
       "name": "invalidBps"
+    },
+    {
+      "code": 6006,
+      "name": "escrowAmtIsNotCorrect"
     }
   ],
   "types": [
