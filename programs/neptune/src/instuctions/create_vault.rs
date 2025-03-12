@@ -30,7 +30,7 @@ impl<'info> CreateVault<'info> {
                 payer: self.signer.to_account_info(),
                 locker: self.locker.to_account_info(),
                 escrow: self.escrow.to_account_info(),
-                escrow_owner: self.escrow_owner.to_account_info(),
+                escrow_owner: self.vault.to_account_info(),
                 system_program: self.system_program.to_account_info(),
             },
         );
@@ -70,7 +70,9 @@ pub struct CreateVault<'info>{
     )]
     pub lst_mint: Box<InterfaceAccount<'info, Mint>>,
 
-    #[account(address = locker.token_mint)]
+    #[account(
+        address = locker.token_mint
+    )]
     pub utoken_mint: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(mut)]
@@ -83,14 +85,11 @@ pub struct CreateVault<'info>{
         seeds = [
             b"Escrow".as_ref(),
             locker.key().as_ref(),
-            escrow_owner.key().as_ref()
+            vault.key().as_ref()
         ],
         bump,
     )]
     pub escrow: UncheckedAccount<'info>,
-
-    /// CHECK: checked in cpi
-    pub escrow_owner: UncheckedAccount<'info>,
 
     /// CHECK: new vault owner
     pub vault_owner: UncheckedAccount<'info>,

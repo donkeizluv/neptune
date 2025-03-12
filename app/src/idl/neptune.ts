@@ -102,13 +102,10 @@ export type Neptune = {
               },
               {
                 "kind": "account",
-                "path": "escrowOwner"
+                "path": "vault"
               }
             ]
           }
-        },
-        {
-          "name": "escrowOwner"
         },
         {
           "name": "vaultOwner"

@@ -4,7 +4,7 @@ use instuctions::*;
 pub mod instuctions;
 pub mod macros;
 pub mod state;
-pub mod utils;
+
 declare_id!("DxQiCxj7hPw5oCXt4uMxXrsp1CLBmRUXzZczUwH9C5VU");
 
 declare_program!(lock_voter);
@@ -28,4 +28,5 @@ pub enum NeptuneError {
     InvalidUnstakeAmt,
     AmtMustGreaterThanZero,
     InvalidBPS,
+    EscrowAmtIsNotCorrect
 }

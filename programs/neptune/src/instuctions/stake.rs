@@ -26,7 +26,7 @@ impl<'info> Stake<'info> {
                 locker: self.locker.to_account_info(),
                 escrow: self.escrow.to_account_info(),
                 source_tokens: self.utoken_source_ata.to_account_info(),
-                escrow_tokens: self.escrow_utoken_ata.to_account_info(),
+                escrow_tokens: self.utoken_escrow_ata.to_account_info(),
                 token_program: self.token_program.to_account_info(),
             },
         );
@@ -78,9 +78,9 @@ pub struct Stake<'info>{
 
     #[account(
         mut,
-        constraint = escrow.tokens == escrow_utoken_ata.key()
+        address = escrow.tokens
     )]
-    pub escrow_utoken_ata: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub utoken_escrow_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
     #[account(
         mut,
