@@ -2,7 +2,7 @@ use crate::{
     lock_voter::{
         self,
         accounts::Escrow,
-        cpi::{accounts::MergePartialUnstaking, merge_partial_unstaking},
+        cpi::{self as locked_voter, accounts::MergePartialUnstaking},
     },
     state::{Unstaking, Vault},
     vault_seeds,
@@ -10,7 +10,7 @@ use crate::{
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
-    token::{transfer_checked, TransferChecked},
+    token::{self, TransferChecked},
     token_interface::{Mint, TokenAccount, TokenInterface},
 };
 
@@ -30,7 +30,7 @@ impl<'info> MergeUnstake<'info> {
             },
             vault_seeds,
         );
-        transfer_checked(
+        token::transfer_checked(
             xfer_lst_to_user_cpi,
             self.unstaking.lst_amt,
             self.lst_mint.decimals,
@@ -47,7 +47,7 @@ impl<'info> MergeUnstake<'info> {
             },
             vault_seeds,
         );
-        merge_partial_unstaking(merge_partial_unstaking_cpi)?;
+        locked_voter::merge_partial_unstaking(merge_partial_unstaking_cpi)?;
 
         Ok(())
     }

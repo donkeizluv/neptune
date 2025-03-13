@@ -2,7 +2,7 @@ use crate::{
     lock_voter::{
         self,
         accounts::Locker,
-        cpi::{self, accounts::NewEscrow},
+        cpi::{self as locked_voter, accounts::NewEscrow},
     },
     state::Vault,
     NeptuneError,
@@ -34,7 +34,7 @@ impl<'info> CreateVault<'info> {
                 system_program: self.system_program.to_account_info(),
             },
         );
-        cpi::new_escrow(new_escrow_cpi)?;
+        locked_voter::new_escrow(new_escrow_cpi)?;
 
         Ok(())
     }

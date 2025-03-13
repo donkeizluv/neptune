@@ -2,7 +2,7 @@ use crate::{
     lock_voter::{
         self,
         accounts::Escrow,
-        cpi::{self, accounts::OpenPartialUnstaking},
+        cpi::{self as locked_voter, accounts::OpenPartialUnstaking},
     },
     state::{Unstaking, Vault},
     NeptuneError,
@@ -10,7 +10,7 @@ use crate::{
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
-    token::{transfer_checked, TransferChecked},
+    token::{self, TransferChecked},
     token_interface::{Mint, TokenAccount, TokenInterface},
 };
 
@@ -36,7 +36,7 @@ impl<'info> BeginUnstaking<'info> {
                 authority: self.signer.to_account_info(),
             },
         );
-        transfer_checked(xfer_lst_to_escrow_cpi, lst_amt, self.lst_mint.decimals)?;
+        token::transfer_checked(xfer_lst_to_escrow_cpi, lst_amt, self.lst_mint.decimals)?;
 
         // open partial unstaking
         let open_partial_unstaking_cpi = CpiContext::new(
@@ -49,7 +49,7 @@ impl<'info> BeginUnstaking<'info> {
                 system_program: self.system_program.to_account_info(),
             },
         );
-        cpi::open_partial_unstaking(
+        locked_voter::open_partial_unstaking(
             open_partial_unstaking_cpi,
             utoken_amt,
             Unstaking::PARTIAL_UNSTAKING_MEMO.to_string(),

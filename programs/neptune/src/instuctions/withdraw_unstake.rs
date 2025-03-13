@@ -2,7 +2,7 @@ use crate::{
     lock_voter::{
         self,
         accounts::{Escrow, Locker},
-        cpi::{accounts::WithdrawPartialUnstaking, withdraw_partial_unstaking},
+        cpi::{self as locked_voter, accounts::WithdrawPartialUnstaking},
     },
     state::{Unstaking, Vault},
     unwrap_ops, vault_seeds, NeptuneError,
@@ -10,7 +10,7 @@ use crate::{
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
-    token::{burn, close_account, transfer_checked, Burn, CloseAccount, TransferChecked},
+    token::{self, Burn, CloseAccount, TransferChecked},
     token_interface::{Mint, TokenAccount, TokenInterface},
 };
 
@@ -34,7 +34,7 @@ impl<'info> WithdrawUnstake<'info> {
             },
             vault_seeds,
         );
-        withdraw_partial_unstaking(withdraw_partial_unstaking_cpi)?;
+        locked_voter::withdraw_partial_unstaking(withdraw_partial_unstaking_cpi)?;
 
         // update vault state
         self.vault
@@ -59,7 +59,7 @@ impl<'info> WithdrawUnstake<'info> {
                     authority: self.vault.to_account_info(),
                 },
             );
-            transfer_checked(xfer_exceeding_cpi, exceeding_amt, self.lst_mint.decimals)?;
+            token::transfer_checked(xfer_exceeding_cpi, exceeding_amt, self.lst_mint.decimals)?;
         }
         // burn lst
         let burn_lst_cpi = CpiContext::new_with_signer(
@@ -71,7 +71,7 @@ impl<'info> WithdrawUnstake<'info> {
             },
             vault_seeds,
         );
-        burn(burn_lst_cpi, self.unstaking.lst_amt)?;
+        token::burn(burn_lst_cpi, self.unstaking.lst_amt)?;
 
         // close lst_escrow_ata
         let close_lst_escrow_ata_cpi = CpiContext::new_with_signer(
@@ -83,7 +83,7 @@ impl<'info> WithdrawUnstake<'info> {
             },
             vault_seeds,
         );
-        close_account(close_lst_escrow_ata_cpi)?;
+        token::close_account(close_lst_escrow_ata_cpi)?;
 
         Ok(())
     }

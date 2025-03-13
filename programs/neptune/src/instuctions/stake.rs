@@ -2,7 +2,7 @@ use crate::{
     lock_voter::{
         self,
         accounts::{Escrow, Locker},
-        cpi::{accounts::IncreaseLockedAmount, increase_locked_amount},
+        cpi::{self as locked_voter, accounts::IncreaseLockedAmount},
     },
     state::Vault,
     vault_seeds, NeptuneError,
@@ -10,7 +10,7 @@ use crate::{
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
-    token::{mint_to, MintTo},
+    token::{self, MintTo},
     token_interface::{Mint, TokenAccount, TokenInterface},
 };
 
@@ -30,7 +30,7 @@ impl<'info> Stake<'info> {
                 token_program: self.token_program.to_account_info(),
             },
         );
-        increase_locked_amount(incease_lock_amt_cpi, utoken_amt)?;
+        locked_voter::increase_locked_amount(incease_lock_amt_cpi, utoken_amt)?;
 
         // mint lst to user
         let lst_amt = self.vault.get_lst_amt(utoken_amt)?;
@@ -45,7 +45,7 @@ impl<'info> Stake<'info> {
             },
             vault_seeds,
         );
-        mint_to(mint_lst_to_user_cpi, lst_amt)?;
+        token::mint_to(mint_lst_to_user_cpi, lst_amt)?;
 
         // update vault state
         self.vault.stake(utoken_amt, lst_amt)?;
