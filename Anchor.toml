@@ -41,6 +41,7 @@ address = "smaK3fwkA7ubbxEhsimp1iqPTzfS4MBsNL77QLABZP6"
 # JUP locker
 [[test.validator.clone]]
 address = "CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN"
+
 # JUP mint
 [[test.validator.clone]]
 address = "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"

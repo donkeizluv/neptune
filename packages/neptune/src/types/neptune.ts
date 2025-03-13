@@ -241,7 +241,11 @@ export type Neptune = {
               },
               {
                 "kind": "account",
-                "path": "escrow"
+                "path": "locker"
+              },
+              {
+                "kind": "account",
+                "path": "vaultOwner"
               }
             ]
           }
@@ -275,30 +279,7 @@ export type Neptune = {
         },
         {
           "name": "escrow",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  69,
-                  115,
-                  99,
-                  114,
-                  111,
-                  119
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "locker"
-              },
-              {
-                "kind": "account",
-                "path": "vault"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "vaultOwner"

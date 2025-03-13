@@ -48,7 +48,8 @@ pub struct CreateVault<'info>{
         space = Vault::DISCRIMINATOR.len() + Vault::INIT_SPACE,
         seeds = [
             &Vault::VAULT_SEED,
-            escrow.key().as_ref()
+            locker.key().as_ref(),
+            vault_owner.key().as_ref(),
         ],
         bump,
     )]
@@ -74,17 +75,12 @@ pub struct CreateVault<'info>{
     #[account(mut)]
     pub locker: Box<Account<'info, Locker>>,
 
+    // escrow seeds
+    // b"Escrow".as_ref(),
+    // locker.key().as_ref(),
+    // escrow_owner.key().as_ref()
     /// CHECK: checked in cpi
-    #[account(
-        mut,
-        // as in WAGMI
-        seeds = [
-            b"Escrow".as_ref(),
-            locker.key().as_ref(),
-            vault.key().as_ref()
-        ],
-        bump,
-    )]
+    #[account(mut)]
     pub escrow: UncheckedAccount<'info>,
 
     /// CHECK: new vault owner
