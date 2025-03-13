@@ -3,7 +3,7 @@
   "scripts": {
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-    "program:build": "anchor build && cp target/idl/neptune.json idls/neptune.json && solana program dump voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj program_bytes/locked_voter.so -u mainnet-beta && solana account JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN  --output-file program_bytes/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN -u mainnet-beta && solana account CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN  --output-file program_bytes/CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN -u mainnet-beta",
+    "program:build": "anchor build && cp target/idl/neptune.json idls/neptune.json && mkdir -p program_bytes && solana program dump voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj program_bytes/locked_voter.so -u mainnet-beta && solana account JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN  --output-file program_bytes/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN -u mainnet-beta && solana account CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN  --output-file program_bytes/CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN -u mainnet-beta",
     "program:test": "yarn program:build && cargo test"
   },
   "dependencies": {
