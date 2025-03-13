@@ -5,7 +5,7 @@ use crate::{
         cpi::{accounts::WithdrawPartialUnstaking, withdraw_partial_unstaking},
     },
     state::{Unstaking, Vault},
-    vault_seeds, NeptuneError,
+    unwrap_ops, vault_seeds, NeptuneError,
 };
 use anchor_lang::prelude::*;
 use anchor_spl::{
@@ -15,7 +15,7 @@ use anchor_spl::{
 };
 
 impl<'info> WithdrawUnstake<'info> {
-    pub fn merge_stake(&mut self) -> Result<()> {
+    pub fn withdraw_unstake(&mut self) -> Result<()> {
         let vault_key = self.vault.key();
         let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, vault_key);
 
@@ -41,11 +41,12 @@ impl<'info> WithdrawUnstake<'info> {
             .unstake(self.unstaking.lst_amt, self.unstaking.utoken_amt)?;
 
         // handle ATA amt > escrowed lst amt
-        let exceeding_amt = self
-            .lst_escrow_ata
-            .amount
-            .checked_sub(self.unstaking.lst_amt)
-            .ok_or(NeptuneError::EscrowAmtIsNotCorrect)?;
+        let exceeding_amt = unwrap_ops!(
+            self.lst_escrow_ata
+                .amount
+                .checked_sub(self.unstaking.lst_amt),
+            NeptuneError::EscrowAmtIsNotCorrect
+        );
 
         if exceeding_amt > 0 {
             // xfer exceeding back to user

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::NeptuneError;
+use crate::{unwrap_ops, NeptuneError};
 
 #[account]
 #[derive(InitSpace, Debug, Default)]
@@ -49,38 +49,35 @@ impl Vault {
     }
 
     pub fn unstake(&mut self, lst_amt: u64, utoken_amt: u64) -> Result<u64> {
-        self.total_utoken_staked = self
-            .total_utoken_staked
-            .checked_sub(utoken_amt)
-            .ok_or(NeptuneError::InvalidUnstakeAmt)?;
+        self.total_utoken_staked = unwrap_ops!(
+            self.total_utoken_staked.checked_sub(utoken_amt),
+            NeptuneError::InvalidUnstakeAmt
+        );
 
-        self.total_lst_minted = self
-            .total_lst_minted
-            .checked_sub(lst_amt)
-            .ok_or(NeptuneError::InvalidUnstakeAmt)?;
+        self.total_lst_minted = unwrap_ops!(
+            self.total_lst_minted.checked_sub(lst_amt),
+            NeptuneError::InvalidUnstakeAmt
+        );
 
         Ok(utoken_amt)
     }
 
     pub fn stake(&mut self, utoken_amt: u64, lst_amt: u64) -> Result<u64> {
-        self.total_lst_minted = self
-            .total_lst_minted
-            .checked_add(lst_amt)
-            .ok_or(NeptuneError::ArithmeticOverflow)?;
+        self.total_lst_minted = unwrap_ops!(
+            self.total_lst_minted.checked_add(lst_amt),
+            NeptuneError::InvalidStakeAmt
+        );
 
-        self.total_utoken_staked = self
-            .total_utoken_staked
-            .checked_add(utoken_amt)
-            .ok_or(NeptuneError::ArithmeticOverflow)?;
+        self.total_utoken_staked = unwrap_ops!(
+            self.total_utoken_staked.checked_add(utoken_amt),
+            NeptuneError::InvalidStakeAmt
+        );
 
         Ok(lst_amt)
     }
 
     pub fn add_reward(&mut self, utoken_amt: u64) -> Result<()> {
-        self.total_utoken_staked = self
-            .total_utoken_staked
-            .checked_add(utoken_amt)
-            .ok_or(NeptuneError::ArithmeticOverflow)?;
+        self.total_utoken_staked = unwrap_ops!(self.total_utoken_staked.checked_add(utoken_amt));
 
         Ok(())
     }

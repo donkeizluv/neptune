@@ -15,7 +15,7 @@ use anchor_spl::{
 };
 
 impl<'info> MergeUnstake<'info> {
-    pub fn merge_stake(&mut self) -> Result<()> {
+    pub fn merge_unstaking(&mut self) -> Result<()> {
         let vault_key = self.vault.key();
         let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, vault_key);
 
