@@ -3,7 +3,8 @@
   "scripts": {
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-    "program:build": "anchor build && cp target/idl/neptune.json idls/neptune.json && solana program dump voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj program_bytes/locked_voter.so -u mainnet-beta"
+    "program:build": "anchor build && cp target/idl/neptune.json idls/neptune.json && solana program dump voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj program_bytes/locked_voter.so -u mainnet-beta",
+    "program:test": "yarn program:build && cargo test"
   },
   "dependencies": {
     "@coral-xyz/anchor": "0.31.0",
