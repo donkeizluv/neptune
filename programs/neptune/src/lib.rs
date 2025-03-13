@@ -7,7 +7,7 @@ pub mod state;
 
 declare_id!("DxQiCxj7hPw5oCXt4uMxXrsp1CLBmRUXzZczUwH9C5VU");
 
-declare_program!(lock_voter);
+declare_program!(locked_voter);
 
 #[program]
 pub mod neptune {
@@ -46,4 +46,5 @@ pub enum NeptuneError {
     AmtMustGreaterThanZero,
     InvalidBPS,
     EscrowAmtIsNotCorrect,
+    InvalidOwner
 }

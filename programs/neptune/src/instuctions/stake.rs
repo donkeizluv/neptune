@@ -1,8 +1,8 @@
 use crate::{
-    lock_voter::{
+    locked_voter::{
         self,
         accounts::{Escrow, Locker},
-        cpi::{self as locked_voter, accounts::IncreaseLockedAmount},
+        cpi::accounts::IncreaseLockedAmount,
     },
     state::Vault,
     vault_seeds, NeptuneError,
@@ -20,7 +20,7 @@ impl<'info> Stake<'info> {
 
         // increase stake to locked_voter
         let incease_lock_amt_cpi = CpiContext::new(
-            self.locked_voter.to_account_info(),
+            self.locked_voter_program.to_account_info(),
             IncreaseLockedAmount {
                 payer: self.signer.to_account_info(),
                 locker: self.locker.to_account_info(),
@@ -30,7 +30,7 @@ impl<'info> Stake<'info> {
                 token_program: self.token_program.to_account_info(),
             },
         );
-        locked_voter::increase_locked_amount(incease_lock_amt_cpi, utoken_amt)?;
+        locked_voter::cpi::increase_locked_amount(incease_lock_amt_cpi, utoken_amt)?;
 
         // mint lst to user
         let lst_amt = self.vault.get_lst_amt(utoken_amt)?;
@@ -106,8 +106,8 @@ pub struct Stake<'info>{
 
     // programs
     /// CHECK: check in attr
-    #[account(address = lock_voter::ID)]
-    pub locked_voter: UncheckedAccount<'info>,
+    #[account(address = locked_voter::ID)]
+    pub locked_voter_program: UncheckedAccount<'info>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,

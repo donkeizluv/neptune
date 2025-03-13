@@ -184,7 +184,7 @@ export type Neptune = {
           }
         },
         {
-          "name": "lockedVoter",
+          "name": "lockedVoterProgram",
           "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
         },
         {
@@ -304,7 +304,7 @@ export type Neptune = {
           "name": "vaultOwner"
         },
         {
-          "name": "lockedVoter",
+          "name": "lockedVoterProgram",
           "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
         },
         {
@@ -502,7 +502,7 @@ export type Neptune = {
           }
         },
         {
-          "name": "lockedVoter",
+          "name": "lockedVoterProgram",
           "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
         },
         {
@@ -745,7 +745,7 @@ export type Neptune = {
           }
         },
         {
-          "name": "lockedVoter",
+          "name": "lockedVoterProgram",
           "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
         },
         {
@@ -1043,7 +1043,7 @@ export type Neptune = {
           "writable": true
         },
         {
-          "name": "lockedVoter",
+          "name": "lockedVoterProgram",
           "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
         },
         {
@@ -1149,6 +1149,10 @@ export type Neptune = {
     {
       "code": 6007,
       "name": "escrowAmtIsNotCorrect"
+    },
+    {
+      "code": 6008,
+      "name": "invalidOwner"
     }
   ],
   "types": [

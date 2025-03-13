@@ -1,1 +1,0 @@
-mod stake_test;

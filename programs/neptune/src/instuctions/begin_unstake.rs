@@ -1,9 +1,5 @@
 use crate::{
-    lock_voter::{
-        self,
-        accounts::Escrow,
-        cpi::{self as locked_voter, accounts::OpenPartialUnstaking},
-    },
+    locked_voter::{self, accounts::Escrow, cpi::accounts::OpenPartialUnstaking},
     state::{Unstaking, Vault},
     NeptuneError,
 };
@@ -40,7 +36,7 @@ impl<'info> BeginUnstaking<'info> {
 
         // open partial unstaking
         let open_partial_unstaking_cpi = CpiContext::new(
-            self.locked_voter.to_account_info(),
+            self.locked_voter_program.to_account_info(),
             OpenPartialUnstaking {
                 locker: self.locker.to_account_info(),
                 escrow: self.escrow.to_account_info(),
@@ -49,7 +45,7 @@ impl<'info> BeginUnstaking<'info> {
                 system_program: self.system_program.to_account_info(),
             },
         );
-        locked_voter::open_partial_unstaking(
+        locked_voter::cpi::open_partial_unstaking(
             open_partial_unstaking_cpi,
             utoken_amt,
             Unstaking::PARTIAL_UNSTAKING_MEMO.to_string(),
@@ -121,8 +117,8 @@ pub struct BeginUnstaking<'info>{
 
     // programs
     /// CHECK: check in attr
-    #[account(address = lock_voter::ID)]
-    pub locked_voter: UncheckedAccount<'info>,
+    #[account(address = locked_voter::ID)]
+    pub locked_voter_program: UncheckedAccount<'info>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,

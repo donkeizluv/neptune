@@ -1,11 +1,11 @@
 use crate::{
-    lock_voter::{
+    locked_voter::{
         self,
         accounts::Escrow,
-        cpi::{self as locked_voter, accounts::MergePartialUnstaking},
+        cpi::accounts::MergePartialUnstaking,
     },
     state::{Unstaking, Vault},
-    vault_seeds,
+    vault_seeds, NeptuneError,
 };
 use anchor_lang::prelude::*;
 use anchor_spl::{
@@ -38,7 +38,7 @@ impl<'info> MergeUnstake<'info> {
 
         // merge parital_unstaking
         let merge_partial_unstaking_cpi = CpiContext::new_with_signer(
-            self.locked_voter.to_account_info(),
+            self.locked_voter_program.to_account_info(),
             MergePartialUnstaking {
                 locker: self.locker.to_account_info(),
                 escrow: self.escrow.to_account_info(),
@@ -47,7 +47,7 @@ impl<'info> MergeUnstake<'info> {
             },
             vault_seeds,
         );
-        locked_voter::merge_partial_unstaking(merge_partial_unstaking_cpi)?;
+        locked_voter::cpi::merge_partial_unstaking(merge_partial_unstaking_cpi)?;
 
         Ok(())
     }
@@ -96,7 +96,7 @@ pub struct MergeUnstake<'info>{
         mut,
         has_one = partial_unstaking,
         has_one = vault,
-        constraint = unstaking.owner == signer.key(),
+        constraint = unstaking.owner == signer.key() @ NeptuneError::InvalidOwner,
         close = signer
     )]
     pub unstaking: Box<Account<'info, Unstaking>>,
@@ -115,8 +115,8 @@ pub struct MergeUnstake<'info>{
 
     // programs
     /// CHECK: check in attr
-    #[account(address = lock_voter::ID)]
-    pub locked_voter: UncheckedAccount<'info>,
+    #[account(address = locked_voter::ID)]
+    pub locked_voter_program: UncheckedAccount<'info>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,

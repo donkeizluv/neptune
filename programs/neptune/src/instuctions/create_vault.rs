@@ -1,9 +1,5 @@
 use crate::{
-    lock_voter::{
-        self,
-        accounts::Locker,
-        cpi::{self as locked_voter, accounts::NewEscrow},
-    },
+    locked_voter::{self, accounts::Locker, cpi::accounts::NewEscrow},
     state::Vault,
     NeptuneError,
 };
@@ -25,7 +21,7 @@ impl<'info> CreateVault<'info> {
         self.vault.fees_bps = fees_bps;
 
         let new_escrow_cpi = CpiContext::new(
-            self.locked_voter.to_account_info(),
+            self.locked_voter_program.to_account_info(),
             NewEscrow {
                 payer: self.signer.to_account_info(),
                 locker: self.locker.to_account_info(),
@@ -34,7 +30,7 @@ impl<'info> CreateVault<'info> {
                 system_program: self.system_program.to_account_info(),
             },
         );
-        locked_voter::new_escrow(new_escrow_cpi)?;
+        locked_voter::cpi::new_escrow(new_escrow_cpi)?;
 
         Ok(())
     }
@@ -96,8 +92,8 @@ pub struct CreateVault<'info>{
 
     // programs
     /// CHECK: check in attr
-    #[account(address = lock_voter::ID)]
-    pub locked_voter: UncheckedAccount<'info>,
+    #[account(address = locked_voter::ID)]
+    pub locked_voter_program: UncheckedAccount<'info>,
     pub token_program: Interface<'info, TokenInterface>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,

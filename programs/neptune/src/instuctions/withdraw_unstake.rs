@@ -1,8 +1,8 @@
 use crate::{
-    lock_voter::{
+    locked_voter::{
         self,
         accounts::{Escrow, Locker},
-        cpi::{self as locked_voter, accounts::WithdrawPartialUnstaking},
+        cpi::accounts::WithdrawPartialUnstaking,
     },
     state::{Unstaking, Vault},
     unwrap_ops, vault_seeds, NeptuneError,
@@ -21,7 +21,7 @@ impl<'info> WithdrawUnstake<'info> {
 
         // withdraw partial unstaking
         let withdraw_partial_unstaking_cpi = CpiContext::new_with_signer(
-            self.locked_voter.to_account_info(),
+            self.locked_voter_program.to_account_info(),
             WithdrawPartialUnstaking {
                 payer: self.signer.to_account_info(),
                 locker: self.locker.to_account_info(),
@@ -34,7 +34,7 @@ impl<'info> WithdrawUnstake<'info> {
             },
             vault_seeds,
         );
-        locked_voter::withdraw_partial_unstaking(withdraw_partial_unstaking_cpi)?;
+        locked_voter::cpi::withdraw_partial_unstaking(withdraw_partial_unstaking_cpi)?;
 
         // update vault state
         self.vault
@@ -125,7 +125,7 @@ pub struct WithdrawUnstake<'info>{
         mut,
         has_one = partial_unstaking,
         has_one = vault,
-        constraint = unstaking.owner == signer.key(),
+        constraint = unstaking.owner == signer.key() @ NeptuneError::InvalidOwner,
         close = signer
     )]
     pub unstaking: Box<Account<'info, Unstaking>>,
@@ -173,8 +173,8 @@ pub struct WithdrawUnstake<'info>{
 
     // programs
     /// CHECK: check in attr
-    #[account(address = lock_voter::ID)]
-    pub locked_voter: UncheckedAccount<'info>,
+    #[account(address = locked_voter::ID)]
+    pub locked_voter_program: UncheckedAccount<'info>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
