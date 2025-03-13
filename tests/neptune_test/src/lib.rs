@@ -11,7 +11,7 @@ mod stake_test {
         },
         Client, Cluster,
     };
-    use anchor_lang::{declare_program, prelude::Pubkey, require, require_eq, system_program};
+    use anchor_lang::{declare_program, prelude::Pubkey, system_program};
     use anchor_spl::{associated_token, token};
     use litesvm::LiteSVM;
     use neptune::client::{accounts::CreateVault, args::CreateVault as CreateVaultArgs};
