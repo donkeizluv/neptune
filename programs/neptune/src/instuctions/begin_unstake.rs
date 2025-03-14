@@ -16,11 +16,12 @@ impl<'info> BeginUnstaking<'info> {
 
         let utoken_amt = self.vault.get_utoken_amt(lst_amt)?;
         // update unstaking state
-        self.unstaking.utoken_amt = utoken_amt;
-        self.unstaking.lst_amt = lst_amt;
-        self.unstaking.owner = self.signer.key();
-        self.unstaking.partial_unstaking = self.partial_unstaking.key();
-        self.unstaking.vault = self.vault.key();
+        let unstaking = &mut self.unstaking;
+        unstaking.utoken_amt = utoken_amt;
+        unstaking.lst_amt = lst_amt;
+        unstaking.owner = self.signer.key();
+        unstaking.partial_unstaking = self.partial_unstaking.key();
+        unstaking.vault = self.vault.key();
 
         // xfer lst to our escrow
         let xfer_lst_to_escrow_cpi = CpiContext::new(

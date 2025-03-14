@@ -46,5 +46,5 @@ pub enum NeptuneError {
     AmtMustGreaterThanZero,
     InvalidBPS,
     EscrowAmtIsNotCorrect,
-    InvalidOwner
+    InvalidOwner,
 }

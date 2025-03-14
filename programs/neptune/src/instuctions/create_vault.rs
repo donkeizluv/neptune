@@ -1,7 +1,11 @@
 use crate::{
-    locked_voter::{self, accounts::Locker, cpi::accounts::NewEscrow},
+    locked_voter::{
+        self,
+        accounts::Locker,
+        cpi::accounts::{NewEscrow, ToggleMaxLock},
+    },
     state::Vault,
-    NeptuneError,
+    vault_seeds, NeptuneError,
 };
 use anchor_lang::prelude::*;
 use anchor_spl::{
@@ -13,12 +17,12 @@ use anchor_spl::{
 impl<'info> CreateVault<'info> {
     pub fn create_vault(&mut self, vault_bump: u8, fees_bps: u16) -> Result<()> {
         require!(fees_bps < MAX_FEE_BASIS_POINTS, NeptuneError::InvalidBPS);
-
-        self.vault.bump = vault_bump;
-        self.vault.escrow = self.escrow.key();
-        self.vault.lst_mint = self.utoken_mint.key();
-        self.vault.owner = self.vault_owner.key();
-        self.vault.fees_bps = fees_bps;
+        let vault = &mut self.vault;
+        vault.escrow = self.escrow.key();
+        vault.lst_mint = self.lst_mint.key();
+        vault.owner = self.vault_owner.key();
+        vault.fees_bps = fees_bps;
+        vault.bump = vault_bump;
 
         let new_escrow_cpi = CpiContext::new(
             self.locked_voter_program.to_account_info(),
@@ -31,6 +35,22 @@ impl<'info> CreateVault<'info> {
             },
         );
         locked_voter::cpi::new_escrow(new_escrow_cpi)?;
+
+        // toggle max lock
+        let locker_key = self.locker.key();
+        let vault_owner = self.vault.owner.key();
+        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, locker_key, vault_owner);
+
+        let toggle_max_lock_cpi = CpiContext::new_with_signer(
+            self.locked_voter_program.to_account_info(),
+            ToggleMaxLock {
+                locker: self.locker.to_account_info(),
+                escrow: self.escrow.to_account_info(),
+                escrow_owner: self.vault.to_account_info(),
+            },
+            vault_seeds,
+        );
+        locked_voter::cpi::toggle_max_lock(toggle_max_lock_cpi, true)?;
 
         Ok(())
     }

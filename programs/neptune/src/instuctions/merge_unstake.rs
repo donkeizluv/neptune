@@ -1,9 +1,5 @@
 use crate::{
-    locked_voter::{
-        self,
-        accounts::Escrow,
-        cpi::accounts::MergePartialUnstaking,
-    },
+    locked_voter::{self, accounts::Escrow, cpi::accounts::MergePartialUnstaking},
     state::{Unstaking, Vault},
     vault_seeds, NeptuneError,
 };
@@ -16,8 +12,9 @@ use anchor_spl::{
 
 impl<'info> MergeUnstake<'info> {
     pub fn merge_unstaking(&mut self) -> Result<()> {
-        let vault_key = self.vault.key();
-        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, vault_key);
+        let locker_key = self.locker.key();
+        let vault_owner = self.vault.owner.key();
+        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, locker_key, vault_owner);
 
         // return lst to user
         let xfer_lst_to_user_cpi = CpiContext::new_with_signer(

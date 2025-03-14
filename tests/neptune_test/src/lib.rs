@@ -1,136 +1,180 @@
+use anchor_lang::declare_program;
+
+mod pda;
+mod prep;
+
+declare_program!(neptune);
+declare_program!(locked_voter);
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used)]
-mod stake_test {
-
-    use std::rc::Rc;
+mod neptune_test {
+    use super::pda::{find_escrow_pda, find_lst_mint_pda, find_vault_pda};
+    use super::{
+        neptune::{
+            self,
+            client::{
+                accounts::{CreateVault, Stake},
+                args::{CreateVault as CreateVaultArgs, Stake as StakeArgs},
+            },
+        },
+        prep::{load_accounts, write_token_account},
+    };
+    use crate::locked_voter;
+    use crate::prep::sync_clock;
 
     use anchor_client::{
         solana_sdk::{
-            account::Account, commitment_config::CommitmentConfig, message::Message, pubkey,
+            commitment_config::CommitmentConfig, message::Message, native_token::sol_to_lamports,
             signature::Keypair, signer::Signer, transaction::Transaction,
         },
         Client, Cluster,
     };
-    use anchor_lang::{declare_program, prelude::Pubkey, system_program};
-    use anchor_spl::{associated_token, token};
-    use litesvm::LiteSVM;
-    use neptune::client::{accounts::CreateVault, args::CreateVault as CreateVaultArgs};
+    use anchor_lang::{system_program, AccountDeserialize};
+    use anchor_spl::token::TokenAccount;
+    use anchor_spl::{
+        associated_token::{self, get_associated_token_address},
+        token::{self, Mint},
+        token_2022::spl_token_2022::ui_amount_to_amount,
+    };
 
-    declare_program!(neptune);
+    use litesvm::LiteSVM;
+    use std::rc::Rc;
 
     #[test]
     fn test_stake() {
+        let vault_owner_kp = Keypair::new();
         let player_kp = Keypair::new();
+        let fees = 1000_u16;
 
         let mut svm = LiteSVM::new().with_blockhash_check(false);
+        svm.airdrop(&vault_owner_kp.pubkey(), sol_to_lamports(1000_f64))
+            .unwrap();
+        svm.airdrop(&player_kp.pubkey(), sol_to_lamports(1000_f64))
+            .unwrap();
+        let (locked_voter_program_id, _, locker_pk, jup_mint_pk) = load_accounts(&mut svm).unwrap();
 
-        svm.airdrop(&player_kp.pubkey(), 10_000_000_000).unwrap();
-
-        // load neptune program
-        let neptune_program_id = neptune::ID;
-        let neptune_bin = include_bytes!("../../../target/deploy/neptune.so");
-        svm.add_program(neptune_program_id, neptune_bin);
-
-        // load locked_voter program
-        let locked_voter_program_id = pubkey!("voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj");
-        let locked_voter_bin = include_bytes!("../../../program_bytes/locked_voter.so");
-        svm.add_program(locked_voter_program_id, locked_voter_bin);
-
-        // load jup mint
-        let jup_mint_pk = pubkey!("JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN");
-        let jup_mint_account =
-            include_bytes!("../../../program_bytes/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN");
-        svm.set_account(
-            jup_mint_pk,
-            Account {
-                lamports: 1_000_000_000,
-                data: jup_mint_account.to_vec(),
-                owner: token::ID,
-                executable: false,
-                rent_epoch: 0,
-            },
-        )
-        .unwrap();
-        // load locker
-        let locker_pk = pubkey!("CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN");
-        let locker_account_bytes =
-            include_bytes!("../../../program_bytes/CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN");
-        svm.set_account(
-            locker_pk,
-            Account {
-                lamports: 1_000_000_000,
-                data: locker_account_bytes.to_vec(),
-                owner: locked_voter_program_id,
-                executable: false,
-                rent_epoch: 0,
-            },
-        )
-        .unwrap();
-
-        // Create program client
+        // Create program clients
         let provider = Client::new_with_options(
-            Cluster::Localnet,
-            Rc::new(&player_kp),
-            CommitmentConfig::confirmed(),
+            Cluster::Mainnet,
+            Rc::new(&vault_owner_kp),
+            CommitmentConfig::processed(),
         );
-        let program = provider.program(neptune::ID).unwrap();
+        let neptune_program = provider.program(neptune::ID).unwrap();
 
-        // prep accounts
+        // sync svm clock with live cluster clock
+        sync_clock(&mut svm, &neptune_program.rpc()).unwrap();
 
-        let (vault_pda, _) = Pubkey::find_program_address(
-            &[
-                b"vault".as_ref(),
-                locker_pk.as_ref(),
-                player_kp.pubkey().as_ref(),
-            ],
-            &neptune::ID,
-        );
-        let (escrow_pda, _) = Pubkey::find_program_address(
-            &[b"Escrow".as_ref(), locker_pk.as_ref(), vault_pda.as_ref()],
-            &locked_voter_program_id,
-        );
+        // prep create vault accounts
+        let vault_pk = find_vault_pda(&locker_pk, &vault_owner_kp.pubkey());
+        let escrow_pk = find_escrow_pda(&locker_pk, &vault_pk, &locked_voter_program_id);
+        let lst_mint_pk = find_lst_mint_pda(&vault_pk, &neptune::ID);
 
-        let (lst_mint_pk, _) =
-            Pubkey::find_program_address(&[b"lst".as_ref(), vault_pda.as_ref()], &neptune::ID);
-
-        let create_vault_ix = program
+        let create_vault_ix = neptune_program
             .request()
             .accounts(CreateVault {
-                signer: player_kp.pubkey(),
+                signer: vault_owner_kp.pubkey(),
                 locker: locker_pk,
-                escrow: escrow_pda,
-                vault: vault_pda,
+                escrow: escrow_pk,
+                vault: vault_pk,
                 lst_mint: lst_mint_pk,
                 utoken_mint: jup_mint_pk,
-                vault_owner: player_kp.pubkey(),
+                vault_owner: vault_owner_kp.pubkey(),
 
                 locked_voter_program: locked_voter_program_id,
                 associated_token_program: associated_token::ID,
                 token_program: token::ID,
                 system_program: system_program::ID,
             })
-            .args(CreateVaultArgs { fees_bps: 1000 })
+            .args(CreateVaultArgs { fees_bps: fees })
             .instructions()
             .unwrap();
 
         let create_vault_tx = Transaction::new(
-            &[&player_kp],
-            Message::new(&create_vault_ix, Some(&player_kp.pubkey())),
+            &[&vault_owner_kp],
+            Message::new(&create_vault_ix, Some(&vault_owner_kp.pubkey())),
             svm.latest_blockhash(),
         );
 
-        // svm.send_transaction(create_vault_tx).unwrap();
+        // println!("{:?}", create_vault_tx.message.account_keys);
 
-        assert!(
-            svm.send_transaction(create_vault_tx).is_ok(),
-            "tx should success"
+        svm.send_transaction(create_vault_tx).unwrap();
+
+        let vault_info = svm.get_account(&vault_pk).unwrap();
+        let vault_account =
+            neptune::accounts::Vault::try_deserialize(&mut vault_info.data.as_slice()).unwrap();
+
+        assert_eq!(vault_account.escrow, escrow_pk);
+        assert_eq!(vault_account.fees_bps, fees);
+        assert_eq!(vault_account.lst_mint, lst_mint_pk);
+        assert_eq!(vault_account.owner, vault_owner_kp.pubkey());
+
+        // read accounts
+        let utoken_mint_info = svm.get_account(&jup_mint_pk).unwrap();
+        let utoken_mint = Mint::try_deserialize(&mut utoken_mint_info.data.as_slice()).unwrap();
+
+        let escrow_info = svm.get_account(&escrow_pk).unwrap();
+        let escrow_account =
+            locked_voter::accounts::Escrow::try_deserialize(&mut escrow_info.data.as_slice())
+                .unwrap();
+
+        let locker_info = svm.get_account(&locker_pk).unwrap();
+        let locker_account =
+            locked_voter::accounts::Locker::try_deserialize(&mut locker_info.data.as_slice())
+                .unwrap();
+
+        // mint player some utokens
+        let player_utoken_ata = write_token_account(
+            &mut svm,
+            &player_kp.pubkey(),
+            &jup_mint_pk,
+            utoken_mint.decimals,
+        )
+        .unwrap();
+        // stake
+        let stake_amt = 1000_f64;
+        // prep stake accounts
+        let player_lst_ata = get_associated_token_address(&player_kp.pubkey(), &lst_mint_pk);
+        let utoken_escrow_ata = get_associated_token_address(&escrow_pk, &jup_mint_pk);
+        let stake_ix = neptune_program
+            .request()
+            .accounts(Stake {
+                signer: player_kp.pubkey(),
+                locker: locker_pk,
+                escrow: escrow_pk,
+                vault: vault_pk,
+                lst_mint: lst_mint_pk,
+                utoken_mint: jup_mint_pk,
+                lst_ata: player_lst_ata,
+                utoken_escrow_ata: utoken_escrow_ata,
+                utoken_source_ata: player_utoken_ata,
+
+                locked_voter_program: locked_voter_program_id,
+                associated_token_program: associated_token::ID,
+                token_program: token::ID,
+                system_program: system_program::ID,
+            })
+            .args(StakeArgs {
+                amount: ui_amount_to_amount(stake_amt, utoken_mint.decimals),
+            })
+            .instructions()
+            .unwrap();
+
+        let stake_tx = Transaction::new(
+            &[&player_kp],
+            Message::new(&stake_ix, Some(&player_kp.pubkey())),
+            svm.latest_blockhash(),
         );
 
-        let vault_account = svm.get_account(&vault_pda).unwrap();
+        svm.send_transaction(stake_tx).unwrap();
+
+        let player_lst_ata_info = svm.get_account(&player_lst_ata).unwrap();
+        let player_lst_ata_account =
+            TokenAccount::try_deserialize(&mut player_lst_ata_info.data.as_slice()).unwrap();
         assert_eq!(
-            vault_account.owner,
-            neptune::ID,
-            "vault account should be inititalized"
+            player_lst_ata_account.amount,
+            ui_amount_to_amount(stake_amt, utoken_mint.decimals),
+            "lst amount should match stake amount"
         );
     }
 }

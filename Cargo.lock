@@ -2375,6 +2375,7 @@ dependencies = [
  "anchor-spl",
  "anyhow",
  "litesvm",
+ "spl-token",
 ]
 
 [[package]]

@@ -33,9 +33,11 @@ impl<'info> Stake<'info> {
         locked_voter::cpi::increase_locked_amount(incease_lock_amt_cpi, utoken_amt)?;
 
         // mint lst to user
+        let locker_key = self.locker.key();
+        let vault_owner = self.vault.owner.key();
+        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, locker_key, vault_owner);
+        
         let lst_amt = self.vault.get_lst_amt(utoken_amt)?;
-        let wagmi_escrow_key = self.escrow.key();
-        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, wagmi_escrow_key);
         let mint_lst_to_user_cpi = CpiContext::new_with_signer(
             self.token_program.to_account_info(),
             MintTo {
@@ -77,8 +79,10 @@ pub struct Stake<'info>{
     pub vault: Box<Account<'info, Vault>>,
 
     #[account(
-        mut,
-        address = escrow.tokens
+        init_if_needed,
+        payer = signer,
+        associated_token::mint = utoken_mint,
+        associated_token::authority = escrow,
     )]
     pub utoken_escrow_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
@@ -87,6 +91,11 @@ pub struct Stake<'info>{
         address = vault.lst_mint
     )]
     pub lst_mint: Box<InterfaceAccount<'info, Mint>>,
+
+    #[account(
+        address = locker.token_mint
+    )]
+    pub utoken_mint: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(
         mut,

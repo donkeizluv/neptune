@@ -16,8 +16,9 @@ use anchor_spl::{
 
 impl<'info> WithdrawUnstake<'info> {
     pub fn withdraw_unstake(&mut self) -> Result<()> {
-        let vault_key = self.vault.key();
-        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, vault_key);
+        let locker_key = self.locker.key();
+        let vault_owner = self.vault.owner.key();
+        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, locker_key, vault_owner);
 
         // withdraw partial unstaking
         let withdraw_partial_unstaking_cpi = CpiContext::new_with_signer(
