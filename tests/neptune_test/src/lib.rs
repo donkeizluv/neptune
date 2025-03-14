@@ -31,10 +31,9 @@ mod neptune_test {
         Client, Cluster,
     };
     use anchor_lang::{system_program, AccountDeserialize};
-    use anchor_spl::token::TokenAccount;
     use anchor_spl::{
         associated_token::{self, get_associated_token_address},
-        token::{self, Mint},
+        token::{self, Mint, TokenAccount},
         token_2022::spl_token_2022::ui_amount_to_amount,
     };
 
@@ -128,7 +127,7 @@ mod neptune_test {
             &mut svm,
             &player_kp.pubkey(),
             &jup_mint_pk,
-            utoken_mint.decimals,
+            ui_amount_to_amount(500_000_f64, utoken_mint.decimals),
         )
         .unwrap();
         // stake

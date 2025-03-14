@@ -36,7 +36,7 @@ impl<'info> Stake<'info> {
         let locker_key = self.locker.key();
         let vault_owner = self.vault.owner.key();
         let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, locker_key, vault_owner);
-        
+
         let lst_amt = self.vault.get_lst_amt(utoken_amt)?;
         let mint_lst_to_user_cpi = CpiContext::new_with_signer(
             self.token_program.to_account_info(),

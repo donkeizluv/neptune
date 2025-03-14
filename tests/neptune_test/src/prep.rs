@@ -14,7 +14,6 @@ use litesvm::LiteSVM;
 use spl_token::{
     solana_program::{program_option::COption, program_pack::Pack},
     state::{Account as SplTokenAccount, AccountState},
-    ui_amount_to_amount,
 };
 
 use crate::neptune;
@@ -85,13 +84,13 @@ pub fn write_token_account(
     svm: &mut LiteSVM,
     owner: &Pubkey,
     mint: &Pubkey,
-    decimals: u8,
+    amt: u64,
 ) -> Result<Pubkey> {
     let owner_ata = get_associated_token_address(&owner, &mint);
     let token_acc = SplTokenAccount {
         mint: mint.clone(),
         owner: owner.clone(),
-        amount: ui_amount_to_amount(500_000_f64, decimals),
+        amount: amt,
         delegate: COption::None,
         state: AccountState::Initialized,
         is_native: COption::None,
