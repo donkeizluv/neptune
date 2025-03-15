@@ -21,9 +21,19 @@ pub fn find_escrow_pda(locker: &Pubkey, vault: &Pubkey, locked_voter_program: &P
     escrow
 }
 
+pub fn find_lst_escrow_ata_pda(unstaking: &Pubkey) -> Pubkey {
+    let (escrow, _) = Pubkey::find_program_address(
+        &[b"unstaking_escrow".as_ref(), unstaking.as_ref()],
+        &neptune::ID,
+    );
+    escrow
+}
+
 pub fn find_lst_mint_pda(vault: &Pubkey, neptune_program: &Pubkey) -> Pubkey {
     let (mint, _) =
         Pubkey::find_program_address(&[b"lst".as_ref(), vault.as_ref()], &neptune_program);
 
     mint
 }
+
+
