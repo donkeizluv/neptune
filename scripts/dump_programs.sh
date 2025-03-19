@@ -9,7 +9,7 @@ dump_program() {
     
     if [ ! -f "$output_file" ]; then
         echo "dumping program ${program_id}..."
-        solana program dump "$program_id" "$output_file" -u mainnet-beta
+        solana program dump "$program_id" "$output_file" -u testnet
     else
         echo "program ${program_id} already exists --> skip"
     fi
@@ -17,7 +17,7 @@ dump_program() {
 
 # List of accounts to download - format: [program_id custom_filename]
 programs=(
-    "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj locked_voter.so"
+    "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC locked_voter.so"
 )
 
 # Download each program

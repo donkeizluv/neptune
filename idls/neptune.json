@@ -26,7 +26,8 @@
           "signer": true
         },
         {
-          "name": "vault"
+          "name": "vault",
+          "writable": true
         },
         {
           "name": "locker",
@@ -52,7 +53,8 @@
         },
         {
           "name": "partial_unstaking",
-          "writable": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "lst_source_ata",
@@ -179,7 +181,7 @@
         },
         {
           "name": "locked_voter_program",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associated_token_program",
@@ -280,7 +282,7 @@
         },
         {
           "name": "locked_voter_program",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "token_program"
@@ -478,7 +480,7 @@
         },
         {
           "name": "locked_voter_program",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associated_token_program",
@@ -810,7 +812,7 @@
         },
         {
           "name": "locked_voter_program",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associated_token_program",
@@ -1108,7 +1110,7 @@
         },
         {
           "name": "locked_voter_program",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associated_token_program",

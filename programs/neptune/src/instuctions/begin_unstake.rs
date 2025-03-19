@@ -1,5 +1,7 @@
 use crate::{
-    locked_voter::{self, accounts::Escrow, cpi::accounts::OpenPartialUnstaking}, state::{Unstaking, Vault}, vault_seeds, NeptuneError
+    locked_voter::{self, accounts::Escrow, cpi::accounts::OpenPartialUnstaking},
+    state::{Unstaking, Vault},
+    vault_seeds, NeptuneError,
 };
 use anchor_lang::prelude::*;
 use anchor_spl::{
@@ -20,18 +22,7 @@ impl<'info> BeginUnstaking<'info> {
         unstaking.owner = self.signer.key();
         unstaking.partial_unstaking = self.partial_unstaking.key();
         unstaking.vault = self.vault.key();
-        let locker_key = self.locker.key();
-        let vault_owner = self.vault.owner.key();
-        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, locker_key, vault_owner);
 
-        msg!("Account signer:  {:?}", self.signer.key());
-        msg!("Account vault:  {:?}", self.vault.key());
-        msg!("Account locker:  {:?}", self.locker.key());
-        msg!("Account escrow:  {:?}", self.escrow.key());
-        msg!("Account lst_mint:  {:?}", self.lst_mint.key());
-        msg!("Account lst_source_ata:  {:?}", self.lst_source_ata.key());
-        msg!("Account lst_escrow_ata:  {:?}", self.lst_escrow_ata.key());
-        msg!("Account partial_unstaking:  {:?}", self.partial_unstaking.key());
         // xfer lst to our escrow
         let xfer_lst_to_escrow_cpi = CpiContext::new(
             self.token_program.to_account_info(),
@@ -40,21 +31,26 @@ impl<'info> BeginUnstaking<'info> {
                 to: self.lst_escrow_ata.to_account_info(),
                 mint: self.lst_mint.to_account_info(),
                 authority: self.signer.to_account_info(),
-            }
+            },
         );
         token::transfer_checked(xfer_lst_to_escrow_cpi, lst_amt, self.lst_mint.decimals)?;
-         
+
         // open partial unstaking
+        let locker_key = self.locker.key();
+        let vault_owner = self.vault.owner.key();
+        let vault_seeds: &[&[&[u8]]] = vault_seeds!(self.vault, locker_key, vault_owner);
+
         let open_partial_unstaking_cpi = CpiContext::new_with_signer(
             self.locked_voter_program.to_account_info(),
             OpenPartialUnstaking {
+                payer: self.signer.to_account_info(),
                 locker: self.locker.to_account_info(),
                 escrow: self.escrow.to_account_info(),
                 owner: self.vault.to_account_info(),
                 partial_unstake: self.partial_unstaking.to_account_info(),
                 system_program: self.system_program.to_account_info(),
             },
-            vault_seeds
+            vault_seeds,
         );
         locked_voter::cpi::open_partial_unstaking(
             open_partial_unstaking_cpi,

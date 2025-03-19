@@ -32,7 +32,8 @@ export type Neptune = {
           "signer": true
         },
         {
-          "name": "vault"
+          "name": "vault",
+          "writable": true
         },
         {
           "name": "locker",
@@ -58,7 +59,8 @@ export type Neptune = {
         },
         {
           "name": "partialUnstaking",
-          "writable": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "lstSourceAta",
@@ -185,7 +187,7 @@ export type Neptune = {
         },
         {
           "name": "lockedVoterProgram",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associatedTokenProgram",
@@ -286,7 +288,7 @@ export type Neptune = {
         },
         {
           "name": "lockedVoterProgram",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "tokenProgram"
@@ -484,7 +486,7 @@ export type Neptune = {
         },
         {
           "name": "lockedVoterProgram",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associatedTokenProgram",
@@ -816,7 +818,7 @@ export type Neptune = {
         },
         {
           "name": "lockedVoterProgram",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associatedTokenProgram",
@@ -1114,7 +1116,7 @@ export type Neptune = {
         },
         {
           "name": "lockedVoterProgram",
-          "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+          "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
         },
         {
           "name": "associatedTokenProgram",

@@ -9,20 +9,23 @@ declare_program!(locked_voter);
 #[cfg(test)]
 #[allow(clippy::unwrap_used)]
 mod neptune_test {
-    use super::pda::{find_escrow_pda, find_lst_mint_pda, find_vault_pda};
     use super::{
+        locked_voter,
         neptune::{
             self,
             client::{
-                accounts::{CreateVault, Stake, BeginUnstaking},
-                args::{CreateVault as CreateVaultArgs, Stake as StakeArgs, BeginUnstaking as BeginUnstakingArgs},
+                accounts::{BeginUnstaking, CreateVault, Stake},
+                args::{
+                    BeginUnstaking as BeginUnstakingArgs, CreateVault as CreateVaultArgs,
+                    Stake as StakeArgs,
+                },
             },
         },
+        pda::find_lst_escrow_ata_pda,
+        pda::{find_escrow_pda, find_lst_mint_pda, find_vault_pda},
+        prep::sync_clock,
         prep::{load_accounts, write_token_account},
     };
-    use crate::locked_voter;
-    use crate::pda::find_lst_escrow_ata_pda;
-    use crate::prep::sync_clock;
 
     use anchor_client::{
         solana_sdk::{
@@ -37,10 +40,7 @@ mod neptune_test {
         token::{self, Mint, TokenAccount},
         token_2022::spl_token_2022::ui_amount_to_amount,
     };
-    use spl_token::{
-        solana_program::{program_option::COption, program_pack::Pack},
-        state::{Account as SplTokenAccount, AccountState},
-    };
+    use spl_token::{solana_program::program_pack::Pack, state::Account as SplTokenAccount};
 
     use litesvm::LiteSVM;
     use std::rc::Rc;
@@ -105,7 +105,7 @@ mod neptune_test {
         let vault_info = svm.get_account(&vault_pk).unwrap();
         let vault_account =
             neptune::accounts::Vault::try_deserialize(&mut vault_info.data.as_slice()).unwrap();
-        println!("vault_account {:?}", vault_account);    
+        println!("vault_account {:?}", vault_account);
 
         assert_eq!(vault_account.escrow, escrow_pk);
         assert_eq!(vault_account.fees_bps, fees);
@@ -126,7 +126,6 @@ mod neptune_test {
             locked_voter::accounts::Locker::try_deserialize(&mut locker_info.data.as_slice())
                 .unwrap();
 
-
         // mint player some utokens
         let player_utoken_ata = write_token_account(
             &mut svm,
@@ -135,16 +134,24 @@ mod neptune_test {
             ui_amount_to_amount(500_000_f64, utoken_mint.decimals),
         )
         .unwrap();
-        println!("player_utoken_ata {:?}", player_utoken_ata);  
+        println!("player_utoken_ata {:?}", player_utoken_ata);
 
         // Fetch the created token account
         let account_data = svm.get_account(&player_utoken_ata).unwrap();
         let token_account = SplTokenAccount::unpack(&account_data.data).unwrap();
 
-         // Verify the account details
+        // Verify the account details
         assert_eq!(token_account.mint, jup_mint_pk, "Mint does not match");
-        assert_eq!(token_account.owner, player_kp.pubkey(), "Owner does not match");
-        assert_eq!(token_account.amount, ui_amount_to_amount(500_000_f64, utoken_mint.decimals), "Incorrect token amount");
+        assert_eq!(
+            token_account.owner,
+            player_kp.pubkey(),
+            "Owner does not match"
+        );
+        assert_eq!(
+            token_account.amount,
+            ui_amount_to_amount(500_000_f64, utoken_mint.decimals),
+            "Incorrect token amount"
+        );
 
         // stake
         let stake_amt = 1000_f64;
@@ -200,7 +207,7 @@ mod neptune_test {
         println!("vault_account {:?}", vault_account);
 
         assert_eq!(
-            vault_account.total_utoken_staked, 
+            vault_account.total_utoken_staked,
             ui_amount_to_amount(stake_amt, utoken_mint.decimals),
             "total_utoken_staked should match stake amount"
         );
@@ -243,10 +250,9 @@ mod neptune_test {
         let player_lst_ata_account =
             TokenAccount::try_deserialize(&mut player_lst_ata_info.data.as_slice()).unwrap();
 
-        let total_amount = ui_amount_to_amount(stake_amt + stake_amt_2st, utoken_mint.decimals);    
+        let total_amount = ui_amount_to_amount(stake_amt + stake_amt_2st, utoken_mint.decimals);
         assert_eq!(
-            player_lst_ata_account.amount,
-            total_amount,
+            player_lst_ata_account.amount, total_amount,
             "lst amount should match stake amount"
         );
 
@@ -255,8 +261,7 @@ mod neptune_test {
             neptune::accounts::Vault::try_deserialize(&mut vault_info.data.as_slice()).unwrap();
 
         assert_eq!(
-            vault_account.total_utoken_staked, 
-            total_amount,
+            vault_account.total_utoken_staked, total_amount,
             "total_utoken_staked should match stake amount"
         );
 
@@ -264,7 +269,7 @@ mod neptune_test {
 
         let unstaking_kp = Keypair::new();
         let partial_unstaking_kp = Keypair::new();
-        let lst_source_ata = get_associated_token_address(&player_kp.pubkey(), &lst_mint_pk,);
+        let lst_source_ata = get_associated_token_address(&player_kp.pubkey(), &lst_mint_pk);
         let lst_escrow_pk = find_lst_escrow_ata_pda(&unstaking_kp.pubkey());
 
         let begin_unstake_ix = neptune_program
@@ -277,8 +282,8 @@ mod neptune_test {
                 lst_mint: lst_mint_pk,
                 unstaking: unstaking_kp.pubkey(),
                 partial_unstaking: partial_unstaking_kp.pubkey(),
-                lst_source_ata: lst_source_ata,//
-                lst_escrow_ata: lst_escrow_pk,//
+                lst_source_ata: lst_source_ata, //
+                lst_escrow_ata: lst_escrow_pk,  //
                 locked_voter_program: locked_voter_program_id,
                 token_program: token::ID,
                 system_program: system_program::ID,
@@ -289,22 +294,26 @@ mod neptune_test {
             })
             .instructions()
             .unwrap();
-            // let begin_unstake_tx = Transaction::new_signed_with_payer(
-            //     &begin_unstake_ix,
-            //     Some(&player_kp.pubkey()),
-            //     &[&player_kp, &unstaking_kp, &partial_unstaking_kp],
-            //     svm.latest_blockhash(),
-            // );
 
-            let mut begin_unstake_tx = Transaction::new_unsigned(Message::new(
-                &begin_unstake_ix,
-                Some(&player_kp.pubkey()),
-            ));
-            print!("account_keys 111111 {:?}", begin_unstake_tx.message.account_keys);
+        // let begin_unstake_tx = Transaction::new_signed_with_payer(
+        //     &begin_unstake_ix,
+        //     Some(&player_kp.pubkey()),
+        //     &[&player_kp, &unstaking_kp, &partial_unstaking_kp],
+        //     svm.latest_blockhash(),
+        // );
 
-            begin_unstake_tx.sign(&[&player_kp, &unstaking_kp, &partial_unstaking_kp], svm.latest_blockhash());
+        let mut begin_unstake_tx =
+            Transaction::new_unsigned(Message::new(&begin_unstake_ix, Some(&player_kp.pubkey())));
+        print!(
+            "account_keys 111111 {:?}",
+            begin_unstake_tx.message.account_keys
+        );
 
-            svm.send_transaction(begin_unstake_tx).unwrap();
+        begin_unstake_tx.sign(
+            &[&player_kp, &unstaking_kp, &partial_unstaking_kp],
+            svm.latest_blockhash(),
+        );
 
+        svm.send_transaction(begin_unstake_tx).unwrap();
     }
 }

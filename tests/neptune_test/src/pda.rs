@@ -35,5 +35,3 @@ pub fn find_lst_mint_pda(vault: &Pubkey, neptune_program: &Pubkey) -> Pubkey {
 
     mint
 }
-
-

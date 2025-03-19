@@ -25,7 +25,7 @@ pub fn load_accounts(svm: &mut LiteSVM) -> Result<(Pubkey, Pubkey, Pubkey, Pubke
     svm.add_program(neptune_program_id, neptune_bin);
 
     // load locked_voter program
-    let locked_voter_program_id = pubkey!("voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj");
+    let locked_voter_program_id = pubkey!("2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC");
     let locked_voter_bin = include_bytes!("../../../.account_bytes/programs/locked_voter.so");
     svm.add_program(locked_voter_program_id, locked_voter_bin);
 

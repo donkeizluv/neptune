@@ -1,45 +1,73 @@
 {
   "version": "0.2.0",
   "name": "locked_voter",
-  "docs": ["Locked voter program."],
+  "docs": [
+    "Locked voter program."
+  ],
   "instructions": [
     {
       "name": "newLocker",
-      "docs": ["Creates a new [Locker]."],
+      "docs": [
+        "Creates a new [Locker]."
+      ],
       "accounts": [
-        { "name": "base", "isMut": false, "isSigner": true, "docs": ["Base."] },
+        {
+          "name": "base",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "Base."
+          ]
+        },
         {
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Locker]."]
+          "docs": [
+            "[Locker]."
+          ]
         },
         {
           "name": "tokenMint",
           "isMut": false,
           "isSigner": false,
-          "docs": ["Mint of the token that can be used to join the [Locker]."]
+          "docs": [
+            "Mint of the token that can be used to join the [Locker]."
+          ]
         },
         {
           "name": "governor",
           "isMut": false,
           "isSigner": false,
-          "docs": ["[Governor] associated with the [Locker]."]
+          "docs": [
+            "[Governor] associated with the [Locker]."
+          ]
         },
         {
           "name": "payer",
           "isMut": true,
           "isSigner": true,
-          "docs": ["Payer of the initialization."]
+          "docs": [
+            "Payer of the initialization."
+          ]
         },
         {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["System program."]
+          "docs": [
+            "System program."
+          ]
         }
       ],
-      "args": [{ "name": "params", "type": { "defined": "LockerParams" } }]
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "LockerParams"
+          }
+        }
+      ]
     },
     {
       "name": "newEscrow",
@@ -55,51 +83,71 @@
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Locker]."]
+          "docs": [
+            "[Locker]."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Escrow]."]
+          "docs": [
+            "[Escrow]."
+          ]
         },
-        { "name": "escrowOwner", "isMut": false, "isSigner": false },
+        {
+          "name": "escrowOwner",
+          "isMut": false,
+          "isSigner": false
+        },
         {
           "name": "payer",
           "isMut": true,
           "isSigner": true,
-          "docs": ["Payer of the initialization."]
+          "docs": [
+            "Payer of the initialization."
+          ]
         },
         {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["System program."]
+          "docs": [
+            "System program."
+          ]
         }
       ],
       "args": []
     },
     {
       "name": "increaseLockedAmount",
-      "docs": ["increase locked amount [Escrow]."],
+      "docs": [
+        "increase locked amount [Escrow]."
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Locker]."]
+          "docs": [
+            "[Locker]."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Escrow]."]
+          "docs": [
+            "[Escrow]."
+          ]
         },
         {
           "name": "escrowTokens",
           "isMut": true,
           "isSigner": false,
-          "docs": ["Token account held by the [Escrow]."]
+          "docs": [
+            "Token account held by the [Escrow]."
+          ]
         },
         {
           "name": "payer",
@@ -113,66 +161,101 @@
           "name": "sourceTokens",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The source of deposited tokens."]
+          "docs": [
+            "The source of deposited tokens."
+          ]
         },
         {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["Token program."]
+          "docs": [
+            "Token program."
+          ]
         }
       ],
-      "args": [{ "name": "amount", "type": "u64" }]
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "extendLockDuration",
-      "docs": ["extend locked duration [Escrow]."],
+      "docs": [
+        "extend locked duration [Escrow]."
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": false,
           "isSigner": false,
-          "docs": ["[Locker]."]
+          "docs": [
+            "[Locker]."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Escrow]."]
+          "docs": [
+            "[Escrow]."
+          ]
         },
         {
           "name": "escrowOwner",
           "isMut": false,
           "isSigner": true,
-          "docs": ["Authority of the [Escrow] and"]
+          "docs": [
+            "Authority of the [Escrow] and"
+          ]
         }
       ],
-      "args": [{ "name": "duration", "type": "i64" }]
+      "args": [
+        {
+          "name": "duration",
+          "type": "i64"
+        }
+      ]
     },
     {
       "name": "toggleMaxLock",
-      "docs": ["toogle max lock [Escrow]."],
+      "docs": [
+        "toogle max lock [Escrow]."
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": false,
           "isSigner": false,
-          "docs": ["[Locker]."]
+          "docs": [
+            "[Locker]."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Escrow]."]
+          "docs": [
+            "[Escrow]."
+          ]
         },
         {
           "name": "escrowOwner",
           "isMut": false,
           "isSigner": true,
-          "docs": ["Authority of the [Escrow] and"]
+          "docs": [
+            "Authority of the [Escrow] and"
+          ]
         }
       ],
-      "args": [{ "name": "isMaxLock", "type": "bool" }]
+      "args": [
+        {
+          "name": "isMaxLock",
+          "type": "bool"
+        }
+      ]
     },
     {
       "name": "withdraw",
@@ -184,289 +267,417 @@
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Locker] being exited from."]
+          "docs": [
+            "The [Locker] being exited from."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Escrow] that is being closed."]
+          "docs": [
+            "The [Escrow] that is being closed."
+          ]
         },
         {
           "name": "escrowOwner",
           "isMut": false,
           "isSigner": true,
-          "docs": ["Authority of the [Escrow]."]
+          "docs": [
+            "Authority of the [Escrow]."
+          ]
         },
         {
           "name": "escrowTokens",
           "isMut": true,
           "isSigner": false,
-          "docs": ["Tokens locked up in the [Escrow]."]
+          "docs": [
+            "Tokens locked up in the [Escrow]."
+          ]
         },
         {
           "name": "destinationTokens",
           "isMut": true,
           "isSigner": false,
-          "docs": ["Destination for the tokens to unlock."]
+          "docs": [
+            "Destination for the tokens to unlock."
+          ]
         },
         {
           "name": "payer",
           "isMut": true,
           "isSigner": true,
-          "docs": ["The payer to receive the rent refund."]
+          "docs": [
+            "The payer to receive the rent refund."
+          ]
         },
         {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["Token program."]
+          "docs": [
+            "Token program."
+          ]
         }
       ],
       "args": []
     },
     {
       "name": "activateProposal",
-      "docs": ["Activates a proposal in token launch phase"],
+      "docs": [
+        "Activates a proposal in token launch phase"
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [Locker]."]
+          "docs": [
+            "The [Locker]."
+          ]
         },
         {
           "name": "governor",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [Governor]."]
+          "docs": [
+            "The [Governor]."
+          ]
         },
         {
           "name": "proposal",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Proposal]."]
+          "docs": [
+            "The [Proposal]."
+          ]
         },
         {
           "name": "governProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [govern] program."]
+          "docs": [
+            "The [govern] program."
+          ]
         },
         {
           "name": "smartWallet",
           "isMut": false,
           "isSigner": true,
-          "docs": ["The smart wallet on the [Governor]."]
+          "docs": [
+            "The smart wallet on the [Governor]."
+          ]
         }
       ],
       "args": []
     },
     {
       "name": "castVote",
-      "docs": ["Casts a vote."],
+      "docs": [
+        "Casts a vote."
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [Locker]."]
+          "docs": [
+            "The [Locker]."
+          ]
         },
         {
           "name": "escrow",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [Escrow] that is voting."]
+          "docs": [
+            "The [Escrow] that is voting."
+          ]
         },
         {
           "name": "voteDelegate",
           "isMut": false,
           "isSigner": true,
-          "docs": ["Vote delegate of the [Escrow]."]
+          "docs": [
+            "Vote delegate of the [Escrow]."
+          ]
         },
         {
           "name": "proposal",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Proposal] being voted on."]
+          "docs": [
+            "The [Proposal] being voted on."
+          ]
         },
         {
           "name": "vote",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Vote]."]
+          "docs": [
+            "The [Vote]."
+          ]
         },
         {
           "name": "governor",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [Governor]."]
+          "docs": [
+            "The [Governor]."
+          ]
         },
         {
           "name": "governProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [govern] program."]
+          "docs": [
+            "The [govern] program."
+          ]
         }
       ],
-      "args": [{ "name": "side", "type": "u8" }]
+      "args": [
+        {
+          "name": "side",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "setVoteDelegate",
-      "docs": ["Delegate escrow vote."],
+      "docs": [
+        "Delegate escrow vote."
+      ],
       "accounts": [
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Escrow]."]
+          "docs": [
+            "The [Escrow]."
+          ]
         },
         {
           "name": "escrowOwner",
           "isMut": false,
           "isSigner": true,
-          "docs": ["The owner of the [Escrow]."]
+          "docs": [
+            "The owner of the [Escrow]."
+          ]
         }
       ],
-      "args": [{ "name": "newDelegate", "type": "publicKey" }]
+      "args": [
+        {
+          "name": "newDelegate",
+          "type": "publicKey"
+        }
+      ]
     },
     {
       "name": "setLockerParams",
-      "docs": ["Set locker params."],
+      "docs": [
+        "Set locker params."
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Locker]."]
+          "docs": [
+            "The [Locker]."
+          ]
         },
         {
           "name": "governor",
           "isMut": false,
           "isSigner": false,
-          "docs": ["The [Governor]."]
+          "docs": [
+            "The [Governor]."
+          ]
         },
         {
           "name": "smartWallet",
           "isMut": false,
           "isSigner": true,
-          "docs": ["The smart wallet on the [Governor]."]
+          "docs": [
+            "The smart wallet on the [Governor]."
+          ]
         }
       ],
-      "args": [{ "name": "params", "type": { "defined": "LockerParams" } }]
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "LockerParams"
+          }
+        }
+      ]
     },
     {
       "name": "openPartialUnstaking",
-      "docs": ["Open partial unstaking"],
+      "docs": [
+        "Open partial unstaking"
+      ],
       "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
         {
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Locker]."]
+          "docs": [
+            "[Locker]."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Escrow]."]
+          "docs": [
+            "[Escrow]."
+          ]
         },
         {
           "name": "partialUnstake",
           "isMut": true,
           "isSigner": true,
-          "docs": ["[Escrow]."]
+          "docs": [
+            "[Escrow]."
+          ]
         },
-        { "name": "owner", "isMut": true, "isSigner": true },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
         {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["System program."]
+          "docs": [
+            "System program."
+          ]
         }
       ],
       "args": [
-        { "name": "amount", "type": "u64" },
-        { "name": "memo", "type": "string" }
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "memo",
+          "type": "string"
+        }
       ]
     },
     {
       "name": "mergePartialUnstaking",
-      "docs": ["Merge partial unstaking"],
+      "docs": [
+        "Merge partial unstaking"
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Locker]."]
+          "docs": [
+            "[Locker]."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["[Escrow]."]
+          "docs": [
+            "[Escrow]."
+          ]
         },
         {
           "name": "partialUnstake",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [PartialUnstaking] that is being merged."]
+          "docs": [
+            "The [PartialUnstaking] that is being merged."
+          ]
         },
-        { "name": "owner", "isMut": true, "isSigner": true }
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        }
       ],
       "args": []
     },
     {
       "name": "withdrawPartialUnstaking",
-      "docs": ["Withdraw partial unstaking"],
+      "docs": [
+        "Withdraw partial unstaking"
+      ],
       "accounts": [
         {
           "name": "locker",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Locker] being exited from."]
+          "docs": [
+            "The [Locker] being exited from."
+          ]
         },
         {
           "name": "escrow",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [Escrow] that is being closed."]
+          "docs": [
+            "The [Escrow] that is being closed."
+          ]
         },
         {
           "name": "partialUnstake",
           "isMut": true,
           "isSigner": false,
-          "docs": ["The [PartialUnstaking] that is being withdraw."]
+          "docs": [
+            "The [PartialUnstaking] that is being withdraw."
+          ]
         },
         {
           "name": "owner",
           "isMut": false,
           "isSigner": true,
-          "docs": ["Authority of the [Escrow]."]
+          "docs": [
+            "Authority of the [Escrow]."
+          ]
         },
         {
           "name": "escrowTokens",
           "isMut": true,
           "isSigner": false,
-          "docs": ["Tokens locked up in the [Escrow]."]
+          "docs": [
+            "Tokens locked up in the [Escrow]."
+          ]
         },
         {
           "name": "destinationTokens",
           "isMut": true,
           "isSigner": false,
-          "docs": ["Destination for the tokens to unlock."]
+          "docs": [
+            "Destination for the tokens to unlock."
+          ]
         },
         {
           "name": "payer",
           "isMut": true,
           "isSigner": true,
-          "docs": ["The payer to receive the rent refund."]
+          "docs": [
+            "The payer to receive the rent refund."
+          ]
         },
         {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["Token program."]
+          "docs": [
+            "Token program."
+          ]
         }
       ],
       "args": []
@@ -475,58 +686,91 @@
   "accounts": [
     {
       "name": "Locker",
-      "docs": ["A group of [Escrow]s."],
+      "docs": [
+        "A group of [Escrow]s."
+      ],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "base",
-            "docs": ["Base account used to generate signer seeds."],
+            "docs": [
+              "Base account used to generate signer seeds."
+            ],
             "type": "publicKey"
           },
-          { "name": "bump", "docs": ["Bump seed."], "type": "u8" },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
           {
             "name": "tokenMint",
-            "docs": ["Mint of the token that must be locked in the [Locker]."],
+            "docs": [
+              "Mint of the token that must be locked in the [Locker]."
+            ],
             "type": "publicKey"
           },
           {
             "name": "lockedSupply",
-            "docs": ["Total number of tokens locked in [Escrow]s."],
+            "docs": [
+              "Total number of tokens locked in [Escrow]s."
+            ],
             "type": "u64"
           },
           {
             "name": "totalEscrow",
-            "docs": ["Total number of escrow"],
+            "docs": [
+              "Total number of escrow"
+            ],
             "type": "u64"
           },
           {
             "name": "governor",
-            "docs": ["Governor associated with the [Locker]."],
+            "docs": [
+              "Governor associated with the [Locker]."
+            ],
             "type": "publicKey"
           },
           {
             "name": "params",
-            "docs": ["Mutable parameters of how a [Locker] should behave."],
-            "type": { "defined": "LockerParams" }
+            "docs": [
+              "Mutable parameters of how a [Locker] should behave."
+            ],
+            "type": {
+              "defined": "LockerParams"
+            }
           },
           {
             "name": "buffers",
-            "docs": ["buffer for further use"],
-            "type": { "array": ["u128", 32] }
+            "docs": [
+              "buffer for further use"
+            ],
+            "type": {
+              "array": [
+                "u128",
+                32
+              ]
+            }
           }
         ]
       }
     },
     {
       "name": "Escrow",
-      "docs": ["Locks tokens on behalf of a user."],
+      "docs": [
+        "Locks tokens on behalf of a user."
+      ],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "locker",
-            "docs": ["The [Locker] that this [Escrow] is part of."],
+            "docs": [
+              "The [Locker] that this [Escrow] is part of."
+            ],
             "type": "publicKey"
           },
           {
@@ -536,20 +780,32 @@
             ],
             "type": "publicKey"
           },
-          { "name": "bump", "docs": ["Bump seed."], "type": "u8" },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
           {
             "name": "tokens",
-            "docs": ["The token account holding the escrow tokens."],
+            "docs": [
+              "The token account holding the escrow tokens."
+            ],
             "type": "publicKey"
           },
           {
             "name": "amount",
-            "docs": ["Amount of tokens staked."],
+            "docs": [
+              "Amount of tokens staked."
+            ],
             "type": "u64"
           },
           {
             "name": "escrowStartedAt",
-            "docs": ["When the [Escrow::owner] started their escrow."],
+            "docs": [
+              "When the [Escrow::owner] started their escrow."
+            ],
             "type": "i64"
           },
           {
@@ -567,39 +823,62 @@
             ],
             "type": "publicKey"
           },
-          { "name": "isMaxLock", "docs": ["Max lock"], "type": "bool" },
+          {
+            "name": "isMaxLock",
+            "docs": [
+              "Max lock"
+            ],
+            "type": "bool"
+          },
           {
             "name": "partialUnstakingAmount",
-            "docs": ["total amount of partial unstaking amount"],
+            "docs": [
+              "total amount of partial unstaking amount"
+            ],
             "type": "u64"
           },
           {
             "name": "padding",
-            "docs": ["padding for further use"],
+            "docs": [
+              "padding for further use"
+            ],
             "type": "u64"
           },
           {
             "name": "buffers",
-            "docs": ["buffer for further use"],
-            "type": { "array": ["u128", 9] }
+            "docs": [
+              "buffer for further use"
+            ],
+            "type": {
+              "array": [
+                "u128",
+                9
+              ]
+            }
           }
         ]
       }
     },
     {
       "name": "PartialUnstaking",
-      "docs": ["Account to store infor for partial unstaking"],
+      "docs": [
+        "Account to store infor for partial unstaking"
+      ],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "escrow",
-            "docs": ["The [Escrow] pubkey."],
+            "docs": [
+              "The [Escrow] pubkey."
+            ],
             "type": "publicKey"
           },
           {
             "name": "amount",
-            "docs": ["Amount of this partial unstaking"],
+            "docs": [
+              "Amount of this partial unstaking"
+            ],
             "type": "u64"
           },
           {
@@ -611,10 +890,23 @@
           },
           {
             "name": "buffers",
-            "docs": ["buffer for further use"],
-            "type": { "array": ["u128", 6] }
+            "docs": [
+              "buffer for further use"
+            ],
+            "type": {
+              "array": [
+                "u128",
+                6
+              ]
+            }
           },
-          { "name": "memo", "docs": ["Memo"], "type": "string" }
+          {
+            "name": "memo",
+            "docs": [
+              "Memo"
+            ],
+            "type": "string"
+          }
         ]
       }
     }
@@ -622,7 +914,9 @@
   "types": [
     {
       "name": "LockerParams",
-      "docs": ["Contains parameters for the [Locker]."],
+      "docs": [
+        "Contains parameters for the [Locker]."
+      ],
       "type": {
         "kind": "struct",
         "fields": [
@@ -636,12 +930,16 @@
           },
           {
             "name": "minStakeDuration",
-            "docs": ["Minimum staking duration."],
+            "docs": [
+              "Minimum staking duration."
+            ],
             "type": "u64"
           },
           {
             "name": "maxStakeDuration",
-            "docs": ["Maximum staking duration."],
+            "docs": [
+              "Maximum staking duration."
+            ],
             "type": "u64"
           },
           {
@@ -659,52 +957,146 @@
     {
       "name": "ExtendLockDurationEvent",
       "fields": [
-        { "name": "locker", "type": "publicKey", "index": false },
-        { "name": "escrowOwner", "type": "publicKey", "index": false },
-        { "name": "tokenMint", "type": "publicKey", "index": false },
-        { "name": "lockerSupply", "type": "u64", "index": false },
-        { "name": "duration", "type": "i64", "index": false },
-        { "name": "prevEscrowEndsAt", "type": "i64", "index": false },
-        { "name": "nextEscrowEndsAt", "type": "i64", "index": false },
-        { "name": "nextEscrowStartedAt", "type": "i64", "index": false }
+        {
+          "name": "locker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "escrowOwner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "lockerSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "duration",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "prevEscrowEndsAt",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "nextEscrowEndsAt",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "nextEscrowStartedAt",
+          "type": "i64",
+          "index": false
+        }
       ]
     },
     {
       "name": "IncreaseLockedAmountEvent",
       "fields": [
-        { "name": "locker", "type": "publicKey", "index": false },
-        { "name": "escrowOwner", "type": "publicKey", "index": false },
-        { "name": "tokenMint", "type": "publicKey", "index": false },
-        { "name": "amount", "type": "u64", "index": false },
-        { "name": "lockerSupply", "type": "u64", "index": false }
+        {
+          "name": "locker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "escrowOwner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lockerSupply",
+          "type": "u64",
+          "index": false
+        }
       ]
     },
     {
       "name": "MergePartialUnstakingEvent",
       "fields": [
-        { "name": "partialUnstake", "type": "publicKey", "index": false },
-        { "name": "escrow", "type": "publicKey", "index": false },
-        { "name": "amount", "type": "u64", "index": false }
+        {
+          "name": "partialUnstake",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "escrow",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
       ]
     },
     {
       "name": "NewEscrowEvent",
       "fields": [
-        { "name": "escrow", "type": "publicKey", "index": false },
-        { "name": "escrowOwner", "type": "publicKey", "index": false },
-        { "name": "locker", "type": "publicKey", "index": false },
-        { "name": "timestamp", "type": "i64", "index": false }
+        {
+          "name": "escrow",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "escrowOwner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "locker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
       ]
     },
     {
       "name": "NewLockerEvent",
       "fields": [
-        { "name": "governor", "type": "publicKey", "index": false },
-        { "name": "locker", "type": "publicKey", "index": false },
-        { "name": "tokenMint", "type": "publicKey", "index": false },
+        {
+          "name": "governor",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "locker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "publicKey",
+          "index": false
+        },
         {
           "name": "params",
-          "type": { "defined": "LockerParams" },
+          "type": {
+            "defined": "LockerParams"
+          },
           "index": false
         }
       ]
@@ -712,24 +1104,48 @@
     {
       "name": "OpenPartialStakingEvent",
       "fields": [
-        { "name": "partialUnstake", "type": "publicKey", "index": false },
-        { "name": "escrow", "type": "publicKey", "index": false },
-        { "name": "amount", "type": "u64", "index": false },
-        { "name": "expiration", "type": "i64", "index": false }
+        {
+          "name": "partialUnstake",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "escrow",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "expiration",
+          "type": "i64",
+          "index": false
+        }
       ]
     },
     {
       "name": "LockerSetParamsEvent",
       "fields": [
-        { "name": "locker", "type": "publicKey", "index": false },
+        {
+          "name": "locker",
+          "type": "publicKey",
+          "index": false
+        },
         {
           "name": "prevParams",
-          "type": { "defined": "LockerParams" },
+          "type": {
+            "defined": "LockerParams"
+          },
           "index": false
         },
         {
           "name": "params",
-          "type": { "defined": "LockerParams" },
+          "type": {
+            "defined": "LockerParams"
+          },
           "index": false
         }
       ]
@@ -737,30 +1153,86 @@
     {
       "name": "SetVoteDelegateEvent",
       "fields": [
-        { "name": "escrowOwner", "type": "publicKey", "index": false },
-        { "name": "oldDelegate", "type": "publicKey", "index": false },
-        { "name": "newDelegate", "type": "publicKey", "index": false }
+        {
+          "name": "escrowOwner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "oldDelegate",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "newDelegate",
+          "type": "publicKey",
+          "index": false
+        }
       ]
     },
     {
       "name": "WithdrawPartialUnstakingEvent",
       "fields": [
-        { "name": "escrowOwner", "type": "publicKey", "index": false },
-        { "name": "locker", "type": "publicKey", "index": false },
-        { "name": "partialUnstaking", "type": "publicKey", "index": false },
-        { "name": "timestamp", "type": "i64", "index": false },
-        { "name": "lockerSupply", "type": "u64", "index": false },
-        { "name": "releasedAmount", "type": "u64", "index": false }
+        {
+          "name": "escrowOwner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "locker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "partialUnstaking",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "lockerSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "releasedAmount",
+          "type": "u64",
+          "index": false
+        }
       ]
     },
     {
       "name": "ExitEscrowEvent",
       "fields": [
-        { "name": "escrowOwner", "type": "publicKey", "index": false },
-        { "name": "locker", "type": "publicKey", "index": false },
-        { "name": "timestamp", "type": "i64", "index": false },
-        { "name": "lockerSupply", "type": "u64", "index": false },
-        { "name": "releasedAmount", "type": "u64", "index": false }
+        {
+          "name": "escrowOwner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "locker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "lockerSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "releasedAmount",
+          "type": "u64",
+          "index": false
+        }
       ]
     }
   ],
@@ -780,21 +1252,41 @@
       "name": "RefreshCannotShorten",
       "msg": "A voting escrow refresh cannot shorten the escrow time remaining"
     },
-    { "code": 6003, "name": "EscrowNotEnded", "msg": "Escrow has not ended" },
-    { "code": 6004, "name": "MaxLockIsSet", "msg": "Maxlock is set" },
+    {
+      "code": 6003,
+      "name": "EscrowNotEnded",
+      "msg": "Escrow has not ended"
+    },
+    {
+      "code": 6004,
+      "name": "MaxLockIsSet",
+      "msg": "Maxlock is set"
+    },
     {
       "code": 6005,
       "name": "ExpirationIsLessThanCurrentTime",
       "msg": "Cannot set expiration less than the current time"
     },
-    { "code": 6006, "name": "LockerIsExpired", "msg": "Locker is expired" },
+    {
+      "code": 6006,
+      "name": "LockerIsExpired",
+      "msg": "Locker is expired"
+    },
     {
       "code": 6007,
       "name": "ExpirationIsNotZero",
       "msg": "Expiration is not zero"
     },
-    { "code": 6008, "name": "AmountIsZero", "msg": "Amount is zero" },
-    { "code": 6009, "name": "MaxLockIsNotSet", "msg": "Maxlock is not set" },
+    {
+      "code": 6008,
+      "name": "AmountIsZero",
+      "msg": "Amount is zero"
+    },
+    {
+      "code": 6009,
+      "name": "MaxLockIsNotSet",
+      "msg": "Maxlock is not set"
+    },
     {
       "code": 6010,
       "name": "InvalidAmountForPartialUnstaking",
@@ -822,6 +1314,6 @@
     }
   ],
   "metadata": {
-    "address": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
+    "address": "2Tp4S4CBn8osgs77BR6o1SVhRpiihWjG2kcsKc9ekPKC"
   }
 }
